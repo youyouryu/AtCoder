@@ -3,14 +3,17 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"math/big"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
+	sc.Buffer([]byte{}, math.MaxInt64)
 	sc.Scan()
 	n, _ := strconv.Atoi(sc.Text())
 	sc.Scan()
@@ -20,21 +23,20 @@ func main() {
 		ai, _ := strconv.Atoi(line[i])
 		a = append(a, ai)
 	}
-	fmt.Println(multiply(a))
+	ans := solve(a)
+	fmt.Printf(ans)
 }
 
-func multiply(a []int) (ans string) {
-	max := big.NewInt(0)
-	max.SetString("1000000000000000000", 10)
-	sum := big.NewInt(0)
-	for i := 0; i < len(a); i++ {
+var max = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
+
+func solve(a []int) (ans string) {
+	sort.Slice(a, func(i, j int) bool { return a[i] < a[j] })
+	sum := big.NewInt(1)
+	for i := range a {
 		ai := big.NewInt(int64(a[i]))
-		for j := 0; j < a[i]; j++ {
-			sum.Add(sum, ai)
-			fmt.Println(sum)
-			if max.Cmp(sum) == -1 {
-				return "-1"
-			}
+		sum.Mul(sum, ai)
+		if sum.Cmp(max) == 1 {
+			return "-1"
 		}
 	}
 	return sum.String()
