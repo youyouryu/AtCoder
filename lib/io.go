@@ -1,0 +1,30 @@
+package lib
+
+import (
+	"bufio"
+	"errors"
+	"io"
+	"math"
+	"strconv"
+)
+
+// Scanner is a wrapper of bufio.Scanner which is customized for competitive programing.
+type Scanner struct {
+	bufio.Scanner
+}
+
+// NewScanner is a constructor for Scanner.
+func NewScanner(r io.Reader) *Scanner {
+	sc := Scanner{*bufio.NewScanner(r)}
+	sc.Buffer([]byte{}, math.MaxInt64)
+	sc.Split(bufio.ScanWords)
+	return &sc
+}
+
+// NextInt reads a integer from io stream.
+func (sc *Scanner) NextInt() (int, error) {
+	if !sc.Scan() {
+		return 0, errors.New("failed to scan")
+	}
+	return strconv.Atoi(sc.Text())
+}
