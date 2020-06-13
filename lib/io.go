@@ -24,7 +24,20 @@ func NewScanner(r io.Reader) *Scanner {
 // NextInt reads a integer from io stream.
 func (sc *Scanner) NextInt() (int, error) {
 	if !sc.Scan() {
-		return 0, errors.New("failed to scan")
+		return -1, errors.New("failed to scan")
 	}
 	return strconv.Atoi(sc.Text())
+}
+
+// NextInts reads n integers from io stream.
+func (sc *Scanner) NextInts(n int) (arr []int, e error) {
+	arr = make([]int, n)
+	for i := 0; i < n; i++ {
+		v, e := sc.NextInt()
+		if e != nil {
+			return nil, e
+		}
+		arr[i] = v
+	}
+	return arr, nil
 }
