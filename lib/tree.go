@@ -30,44 +30,32 @@ func (t *Tree) Insert(v int) {
 }
 
 // Remove removes a value v from Tree
-func (t *Tree) Remove(v int) {
-	var parent, current *Tree
-	parent, current = nil, t
-	for {
-		if current.Value > v {
-			if current.Left == nil {
-				return
-			}
-			parent, current = current, current.Left
-		} else if current.Value < v {
-			if current.Right == nil {
-				return
-			}
-			parent, current = current, current.Right
-		} else {
-			if current.Left != nil && current.Right != nil {
-				afterChild := current.Right
-				for afterChild.Left != nil {
-					afterChild = afterChild.Left
-				}
-				current.Remove(afterChild.Value)
-				current.Value = afterChild.Value
-			} else if current.Left != nil {
-				connect(parent, current, current.Left)
-			} else if current.Right != nil {
-				connect(parent, current, current.Right)
-			} else {
-				connect(parent, current, nil)
-			}
-			return
+func (t *Tree) Remove(v int) *Tree {
+	if v < t.Value {
+		if t.Left != nil {
+			t.Left = t.Left.Remove(v)
 		}
+		return t
 	}
-}
-
-func connect(parent, beforeChild, afterChild *Tree) {
-	if parent.Left == beforeChild {
-		parent.Left = afterChild
+	if v > t.Value {
+		if t.Right != nil {
+			t.Right = t.Right.Remove(v)
+		}
+		return t
+	}
+	if t.Left != nil && t.Right != nil {
+		successor := t.Right
+		for successor.Left != nil {
+			successor = successor.Left
+		}
+		t.Right = t.Right.Remove(successor.Value)
+		t.Value = successor.Value
+		return t
+	} else if t.Left != nil {
+		return t.Left
+	} else if t.Right != nil {
+		return t.Right
 	} else {
-		parent.Right = afterChild
+		return nil
 	}
 }

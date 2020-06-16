@@ -56,7 +56,7 @@ func TestRemove1(t *testing.T) {
 // Remove node which has 1 child
 func TestRemove2(t *testing.T) {
 	tree := initTree([]int{10, 5, 3, 7, 6, 8, 9, 15})
-	tree.Remove(8)
+	tree = tree.Remove(8)
 	ref := []int{10, 5, 3, 7, 6, 9, 15}
 	values := *dfsOrder(tree, nil)
 	assertSlieceEqual(values, ref, t)
@@ -65,7 +65,7 @@ func TestRemove2(t *testing.T) {
 // Remove node which has 2 childeren
 func TestRemove3(t *testing.T) {
 	tree := initTree([]int{10, 5, 3, 7, 6, 8, 9, 15})
-	tree.Remove(7)
+	tree = tree.Remove(7)
 	ref := []int{10, 5, 3, 8, 6, 9, 15}
 	values := *dfsOrder(tree, nil)
 	assertSlieceEqual(values, ref, t)
@@ -74,7 +74,7 @@ func TestRemove3(t *testing.T) {
 // Remove node which does not exist
 func TestRemove4(t *testing.T) {
 	tree := initTree([]int{10, 5, 3, 7, 6, 8, 9, 15})
-	tree.Remove(99)
+	tree = tree.Remove(99)
 	ref := []int{10, 5, 3, 7, 6, 8, 9, 15}
 	values := *dfsOrder(tree, nil)
 	assertSlieceEqual(values, ref, t)
