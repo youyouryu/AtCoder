@@ -28,14 +28,25 @@ func Min(a ...int) (min int) {
 	return min
 }
 
+// ModMul returns a*b with mod
+func ModMul(a, b, mod uint) uint {
+	if b == 0 {
+		return 0
+	}
+	if a*b/b == a {
+		return a * b % mod
+	}
+	panic("overflow")
+}
+
 // ModPow returns base^n with mod
-func ModPow(base, n, mod int) int {
-	ans := 1
+func ModPow(base, n, mod uint) uint {
+	ans := uint(1)
 	for ; n > 0; n >>= 1 {
 		if n&1 == 1 {
-			ans = ans * base % mod
+			ans = ModMul(ans, base, mod)
 		}
-		base = base * base % mod
+		base = ModMul(base, base, mod)
 	}
 	return ans
 }

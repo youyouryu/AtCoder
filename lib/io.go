@@ -41,3 +41,11 @@ func (sc *Scanner) NextInts(n int) (arr []int, e error) {
 	}
 	return arr, nil
 }
+
+// NextString reads a string from io stream
+func (sc *Scanner) NextString() (string, error) {
+	if !sc.Scan() {
+		return "", errors.New("failed to scan")
+	}
+	return sc.Text(), nil
+}
