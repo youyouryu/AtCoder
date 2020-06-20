@@ -27,3 +27,15 @@ func Min(a ...int) (min int) {
 	}
 	return min
 }
+
+// ModPow returns base^n with mod
+func ModPow(base, n, mod int) int {
+	ans := 1
+	for ; n > 0; n >>= 1 {
+		if n&1 == 1 {
+			ans = ans * base % mod
+		}
+		base = base * base % mod
+	}
+	return ans
+}
