@@ -28,6 +28,14 @@ func Min(a ...int) (min int) {
 	return min
 }
 
+// Gcd returns greatest common divisor of a and b
+func Gcd(a, b int) int {
+	if b == 0 {
+		return a
+	}
+	return Gcd(b, a%b)
+}
+
 // ModMul returns a*b with mod
 func ModMul(a, b, mod uint) uint {
 	if b == 0 {
