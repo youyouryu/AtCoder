@@ -62,10 +62,10 @@ type Io struct {
 }
 
 // NewIo returns a new Io instance
-func NewIo() *Io {
+func NewIo(r io.Reader, w io.Writer) *Io {
 	return &Io{
-		reader: bufio.NewReader(os.Stdin),
-		writer: bufio.NewWriter(os.Stdout),
+		reader: bufio.NewReader(r),
+		writer: bufio.NewWriter(w),
 	}
 }
 
@@ -112,6 +112,15 @@ func (io *Io) NextInt() int {
 		panic(err)
 	}
 	return i
+}
+
+// NextInts returns n integers from stdin
+func (io *Io) NextInts(n int) []int {
+	ret := make([]int, n)
+	for i := 0; i < n; i++ {
+		ret[i] = io.NextInt()
+	}
+	return ret
 }
 
 // NextFloat returns a float64 number from stdin
