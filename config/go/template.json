@@ -1,0 +1,8 @@
+{
+  "task": {
+    "program": ["gollect/main.go"],
+    "submit": "gollect/main.go",
+    "testdir": "test",
+    "cmd": "mkdir -p gollect"
+  }
+}
