@@ -65,9 +65,14 @@ func (s *SegmentTree) calc(begin, end, k, cBegin, cEnd int) interface{} {
 	return s.mergeFunc(c1, c2)
 }
 
+// Get returns a node
+func (s *SegmentTree) Get(index int) interface{} {
+	return s.nodes[index]
+}
+
 // Top returns the root node
 func (s *SegmentTree) Top() interface{} {
-	return s.nodes[0]
+	return s.Get(0)
 }
 
 // Update updates a leaf node and reconstruct tree structure.
