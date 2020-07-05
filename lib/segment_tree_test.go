@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestQuerySegmentTree(t *testing.T) {
+func TestCalcSegmentTree(t *testing.T) {
 	n := 6
 	data := prepareData(n)
 	st := NewSegmentTree(data, merge)
@@ -14,7 +14,7 @@ func TestQuerySegmentTree(t *testing.T) {
 	end := []int{1, 2, 3, 4, 5, 8}
 	for i := range begin {
 		expected := calcExpected(data, begin[i], end[i])
-		out := st.Query(begin[i], end[i])
+		out := st.Calc(begin[i], end[i])
 		assert.Equal(t, expected, out)
 	}
 }

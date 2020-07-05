@@ -45,18 +45,18 @@ func (s *SegmentTree) fix() *SegmentTree {
 }
 
 // Calc returns a merged node of [begin, end)
-func (s *SegmentTree) Query(begin, end int) interface{} {
-	return s.query(begin, end, 0, 0, len(s.nodes)-s.offset)
+func (s *SegmentTree) Calc(begin, end int) interface{} {
+	return s.calc(begin, end, 0, 0, len(s.nodes)-s.offset)
 }
 
-func (s *SegmentTree) query(begin, end, k, cBegin, cEnd int) interface{} {
+func (s *SegmentTree) calc(begin, end, k, cBegin, cEnd int) interface{} {
 	if cEnd <= begin || end <= cBegin {
 		return nil
 	} else if begin <= cBegin && cEnd <= end {
 		return s.nodes[k]
 	}
-	c1 := s.query(begin, end, 2*k+1, cBegin, (cBegin+cEnd)/2)
-	c2 := s.query(begin, end, 2*k+2, (cBegin+cEnd)/2, cEnd)
+	c1 := s.calc(begin, end, 2*k+1, cBegin, (cBegin+cEnd)/2)
+	c2 := s.calc(begin, end, 2*k+2, (cBegin+cEnd)/2, cEnd)
 	if c1 == nil {
 		return c2
 	} else if c2 == nil {
