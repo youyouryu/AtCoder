@@ -12,7 +12,7 @@ type SegmentTree struct {
 	mergeFunc MergeFunc
 }
 
-// NewSegMentTree returns a new initialized instance of SegmentTree
+// NewSegmentTree returns a new initialized instance of SegmentTree
 func NewSegmentTree(data []interface{}, mergeFunc MergeFunc) *SegmentTree {
 	depth := 0
 	for 1<<depth < len(data) {
@@ -44,9 +44,25 @@ func (s *SegmentTree) fix() *SegmentTree {
 	return s
 }
 
-// Get returns a leaf node
-func (s *SegmentTree) Get(index int) interface{} {
-	return s.nodes[s.offset+index]
+// Calc returns a merged node of [begin, end)
+func (s *SegmentTree) Query(begin, end int) interface{} {
+	return s.query(begin, end, 0, 0, len(s.nodes)-s.offset)
+}
+
+func (s *SegmentTree) query(begin, end, k, cBegin, cEnd int) interface{} {
+	if cEnd <= begin || end <= cBegin {
+		return nil
+	} else if begin <= cBegin && cEnd <= end {
+		return s.nodes[k]
+	}
+	c1 := s.query(begin, end, 2*k+1, cBegin, (cBegin+cEnd)/2)
+	c2 := s.query(begin, end, 2*k+2, (cBegin+cEnd)/2, cEnd)
+	if c1 == nil {
+		return c2
+	} else if c2 == nil {
+		return c1
+	}
+	return s.mergeFunc(c1, c2)
 }
 
 // Top returns the root node
@@ -56,7 +72,7 @@ func (s *SegmentTree) Top() interface{} {
 
 // Update updates a leaf node and reconstruct tree structure.
 func (s *SegmentTree) Update(index int, value interface{}) *SegmentTree {
-	s.nodes[s.offset+index] = value
+	s.nodes[index] = value
 	return s.fix()
 }
 
