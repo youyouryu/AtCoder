@@ -38,6 +38,7 @@ func Gcd(a, b int) int {
 
 // ModMul returns a*b with mod
 func ModMul(a, b, mod int) int {
+	a, b = a%mod, b%mod
 	if b == 0 {
 		return 0
 	}
