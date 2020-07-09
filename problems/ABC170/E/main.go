@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/yuyamada/AtCoder/lib"
+	"github.com/yuyamada/atcoder/lib"
 )
 
 func main() {
