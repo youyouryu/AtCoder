@@ -1,13 +1,10 @@
 package lib
 
-import "fmt"
-
 // MergeFunc merges two.Nodes to one.
 type MergeFunc func(interface{}, interface{}) interface{}
 
 // SegmentTree is data structure which can calculate the representative value of section
 type SegmentTree struct {
-	Size      int
 	Offset    int
 	Nodes     []interface{}
 	MergeFunc MergeFunc
@@ -26,7 +23,6 @@ func NewSegmentTree(data []interface{}, mergeFunc MergeFunc) *SegmentTree {
 		Nodes[i] = data[i-offset]
 	}
 	s := &SegmentTree{
-		Size:      size,
 		Offset:    offset,
 		Nodes:     Nodes,
 		MergeFunc: mergeFunc,
@@ -46,19 +42,19 @@ func (s *SegmentTree) fix() *SegmentTree {
 	return s
 }
 
-// Calc returns a merged node of [begin, end)
-func (s *SegmentTree) Calc(begin, end int) interface{} {
-	return s.calc(begin, end, 0, 0, s.Size-s.Offset)
+// Query returns a merged node of [begin, end)
+func (s *SegmentTree) Query(begin, end int) interface{} {
+	return s.query(begin, end, 0, 0, len(s.Nodes)-s.Offset)
 }
 
-func (s *SegmentTree) calc(begin, end, k, cBegin, cEnd int) interface{} {
+func (s *SegmentTree) query(begin, end, k, cBegin, cEnd int) interface{} {
 	if cEnd <= begin || end <= cBegin {
 		return nil
 	} else if begin <= cBegin && cEnd <= end {
 		return s.Nodes[k]
 	}
-	c1 := s.calc(begin, end, 2*k+1, cBegin, (cBegin+cEnd)/2)
-	c2 := s.calc(begin, end, 2*k+2, (cBegin+cEnd)/2, cEnd)
+	c1 := s.query(begin, end, 2*k+1, cBegin, (cBegin+cEnd)/2)
+	c2 := s.query(begin, end, 2*k+2, (cBegin+cEnd)/2, cEnd)
 	if c1 == nil {
 		return c2
 	} else if c2 == nil {
@@ -67,27 +63,8 @@ func (s *SegmentTree) calc(begin, end, k, cBegin, cEnd int) interface{} {
 	return s.MergeFunc(c1, c2)
 }
 
-// Get returns a node
-func (s *SegmentTree) Get(index int) interface{} {
-	return s.Nodes[index]
-}
-
-// Top returns the root node
-func (s *SegmentTree) Top() interface{} {
-	return s.Get(0)
-}
-
 // Update updates a leaf node and reconstruct tree structure.
 func (s *SegmentTree) Update(index int, value interface{}) *SegmentTree {
 	s.Nodes[index] = value
 	return s.fix()
-}
-
-// Print outputs contens of the tree for debug
-func (s *SegmentTree) Print() {
-	fmt.Printf("offset=%d\n", s.Offset)
-	for i, v := range s.Nodes {
-		fmt.Printf("%d %+v\n", i, v)
-	}
-	fmt.Println()
 }
