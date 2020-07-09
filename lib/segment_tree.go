@@ -7,7 +7,8 @@ type MergeFunc func(interface{}, interface{}) interface{}
 
 // SegmentTree is data structure which can calculate the representative value of section
 type SegmentTree struct {
-	offset    int
+	Size      int
+	Offset    int
 	nodes     []interface{}
 	mergeFunc MergeFunc
 }
@@ -25,7 +26,8 @@ func NewSegmentTree(data []interface{}, mergeFunc MergeFunc) *SegmentTree {
 		nodes[i] = data[i-offset]
 	}
 	s := &SegmentTree{
-		offset:    offset,
+		Size:      size,
+		Offset:    offset,
 		nodes:     nodes,
 		mergeFunc: mergeFunc,
 	}
@@ -33,7 +35,7 @@ func NewSegmentTree(data []interface{}, mergeFunc MergeFunc) *SegmentTree {
 }
 
 func (s *SegmentTree) fix() *SegmentTree {
-	for i := s.offset - 1; i >= 0; i-- {
+	for i := s.Offset - 1; i >= 0; i-- {
 		left, right := s.nodes[2*i+1], s.nodes[2*i+2]
 		if right == nil {
 			s.nodes[i] = left
@@ -46,7 +48,7 @@ func (s *SegmentTree) fix() *SegmentTree {
 
 // Calc returns a merged node of [begin, end)
 func (s *SegmentTree) Calc(begin, end int) interface{} {
-	return s.calc(begin, end, 0, 0, len(s.nodes)-s.offset)
+	return s.calc(begin, end, 0, 0, s.Size-s.Offset)
 }
 
 func (s *SegmentTree) calc(begin, end, k, cBegin, cEnd int) interface{} {
@@ -83,7 +85,7 @@ func (s *SegmentTree) Update(index int, value interface{}) *SegmentTree {
 
 // Print outputs contens of the tree for debug
 func (s *SegmentTree) Print() {
-	fmt.Printf("offset=%d\n", s.offset)
+	fmt.Printf("offset=%d\n", s.Offset)
 	for i, v := range s.nodes {
 		fmt.Printf("%d %+v\n", i, v)
 	}

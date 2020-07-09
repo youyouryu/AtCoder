@@ -23,7 +23,7 @@ func TestUpdateSegmentTree(t *testing.T) {
 	n := 6
 	data := prepareData(n)
 	st := NewSegmentTree(data, merge)
-	st.Update(st.offset+2, 102)
+	st.Update(st.Offset+2, 102)
 	assert.Equal(t, 115, st.Top())
 }
 
