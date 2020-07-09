@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/youyouryu/AtCoder/lib"
+	"github.com/yuyamada/AtCoder/lib"
 )
 
 func main() {

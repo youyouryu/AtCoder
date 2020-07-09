@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/youyouryu/AtCoder/lib"
+	"github.com/yuyamada/AtCoder/lib"
 )
 
 const n = 26

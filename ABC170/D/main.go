@@ -5,7 +5,7 @@ import (
 	"os"
 	"sort"
 
-	"github.com/youyouryu/AtCoder/lib"
+	"github.com/yuyamada/AtCoder/lib"
 )
 
 func main() {
