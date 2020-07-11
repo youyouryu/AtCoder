@@ -12,14 +12,30 @@ import (
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	k, a, b := io.NextInt(), io.NextInt(), io.NextInt()
-	for i := a; i <= b; i++ {
-		if i%k == 0 {
-			io.Println("OK")
-			return
-		}
+	n, m := io.NextInt(), io.NextInt()
+	a, b := make([]int, m), make([]int, m)
+	i, j := 1, 1
+	idx := 0
+	if m%2 == 1 {
+		a[idx] = i
+		b[idx] = n + 1 - i
+		i++
+		idx++
 	}
-	io.Println("NG")
+	for idx < m {
+		a[idx] = i
+		b[idx] = n + 1 - i
+		i++
+		idx++
+		a[idx] = n/2 + 1 - j
+		b[idx] = n/2 + 1 + j
+		j++
+		idx++
+	}
+
+	for i := range a {
+		io.Println(a[i], b[i])
+	}
 }
 
 // Io is I/O object

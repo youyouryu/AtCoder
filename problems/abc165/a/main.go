@@ -9,9 +9,7 @@ import (
 func main() {
 	io := lib.NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	k := io.NextInt()
-	a := io.NextInt()
-	b := io.NextInt()
+	k, a, b := io.NextInt(), io.NextInt(), io.NextInt()
 	for i := a; i <= b; i++ {
 		if i%k == 0 {
 			io.Println("OK")

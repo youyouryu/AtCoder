@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -12,14 +13,19 @@ import (
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	k, a, b := io.NextInt(), io.NextInt(), io.NextInt()
-	for i := a; i <= b; i++ {
-		if i%k == 0 {
-			io.Println("OK")
-			return
-		}
+	a, b, n := io.NextInt(), io.NextInt(), io.NextInt()
+	max := b - 1
+	if n < max {
+		max = n
 	}
-	io.Println("NG")
+	x := sort.Search(max, func(x int) bool {
+		return f(a, b, x+1) < f(a, b, x)
+	})
+	io.Println(f(a, b, x))
+}
+
+func f(a, b, x int) int {
+	return a*x/b - a*(x/b)
 }
 
 // Io is I/O object
