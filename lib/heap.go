@@ -1,6 +1,7 @@
 package lib
 
 // IntHeap is heap for interger
+// gollect: keep methods
 type IntHeap []int
 
 func (h IntHeap) Len() int           { return len(h) }
