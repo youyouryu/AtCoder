@@ -35,7 +35,7 @@ func (s *SqrtDecomposition) GetSum(begin, end int) (sum int) {
 		if r <= begin || end <= l {
 			continue
 		}
-		if l <= begin && end <= r {
+		if begin <= l && r <= end {
 			sum += s.Bucket[i]
 		} else {
 			for j := Max(begin, l); j < Min(end, r); j++ {
