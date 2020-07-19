@@ -60,3 +60,29 @@ func (a Matrix) Pow(k int) Matrix {
 	}
 	return ret
 }
+
+func Stack(ms [][]Matrix) Matrix {
+	rows := make([]Matrix, len(ms))
+	for i := range ms {
+		rows[i] = HStack(ms[i])
+	}
+	return VStack(rows)
+}
+
+func VStack(ms []Matrix) Matrix {
+	ret := [][]int{}
+	for k := range ms {
+		ret = append(ret, ms[k]...)
+	}
+	return ret
+}
+
+func HStack(ms []Matrix) Matrix {
+	ret := make([][]int, len(ms))
+	for k := range ms {
+		for i := range ms[k] {
+			ret[i] = append(ret[i], ms[k][i]...)
+		}
+	}
+	return ret
+}

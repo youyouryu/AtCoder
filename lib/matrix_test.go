@@ -28,3 +28,15 @@ func TestPowMatrix(t *testing.T) {
 		}
 	}
 }
+
+func TestStack(t *testing.T) {
+	a := Matrix([][]int{{1, 1}, {0, 1}})
+	b := [][]Matrix{{a, a}, {a, a}}
+	c := Stack(b)
+	expected := Matrix([][]int{{1, 1, 1, 1}, {0, 1, 0, 1}, {1, 1, 1, 1}, {0, 1, 0, 1}})
+	for i := range expected {
+		for j := range expected[i] {
+			assert.Equal(t, expected[i][j], c[i][j])
+		}
+	}
+}
