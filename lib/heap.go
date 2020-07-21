@@ -23,3 +23,23 @@ func (h *IntHeap) Pop() interface{} {
 	*h = old[0 : n-1]
 	return x
 }
+
+type Comparable interface{ Less(Comparable) bool }
+
+// PriorityQueue
+// gollect: keep methods
+type PriorityQueue []Comparable
+
+func (q PriorityQueue) Len() int           { return len(q) }
+func (q PriorityQueue) Less(i, j int) bool { return q[i].Less(q[j]) }
+func (q PriorityQueue) Swap(i, j int)      { q[i], q[j] = q[j], q[i] }
+
+// Push adds an element
+func (q *PriorityQueue) Push(x interface{}) { *q = append(*q, x.(Comparable)) }
+
+// Pop gets and remove the minimum element
+func (q *PriorityQueue) Pop() interface{} {
+	x := (*q)[len(*q)-1]
+	*q = (*q)[:len(*q)-1]
+	return x
+}
