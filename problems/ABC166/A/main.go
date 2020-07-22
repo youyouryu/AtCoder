@@ -1,18 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/yuyamada/atcoder/lib"
 )
 
 func main() {
-	sc := lib.NewScanner(os.Stdin)
-	s, _ := sc.NextString()
+	io := lib.NewIo(os.Stdin, os.Stdout)
+	defer io.Flush()
+	s := io.Next()
 	if s == "ABC" {
-		fmt.Println("ARC")
+		io.Println("ARC")
 	} else {
-		fmt.Println("ABC")
+		io.Println("ABC")
 	}
 }

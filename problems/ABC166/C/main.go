@@ -1,52 +1,39 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/yuyamada/atcoder/lib"
 )
 
 func main() {
-	sc := lib.NewScanner(os.Stdin)
-	n, _ := sc.NextInt()
-	m, _ := sc.NextInt()
-	h, _ := sc.NextInts(n)
-	a, b := make([]int, m), make([]int, m)
+	io := lib.NewIo(os.Stdin, os.Stdout)
+	defer io.Flush()
+	n, m := io.NextInt(), io.NextInt()
+	h := io.NextInts(n)
+	g := make([][]int, n)
 	for i := 0; i < m; i++ {
-		a[i], _ = sc.NextInt()
-		b[i], _ = sc.NextInt()
+		from, to := io.NextInt()-1, io.NextInt()-1
+		g[from] = append(g[from], to)
+		g[to] = append(g[to], from)
 	}
-	ans := solve(n, m, h, a, b)
-	fmt.Println(ans)
+	ans := solve(h, g)
+	io.Println(ans)
 }
 
-func solve(n, m int, h, a, b []int) (ans int) {
-	lst := buildGraph(n, a, b)
-	isGood := make([]bool, n)
-	for i := range isGood {
-		isGood[i] = true
-	}
-	for i := 0; i < n; i++ {
-		if !isGood[i] {
-			continue
-		}
-		for j := range lst[i] {
-			if h[j] <= h[i] {
-				isGood[j] = false
-			} else {
-				isGood[i] = false
+func solve(h []int, g [][]int) (ans int) {
+	for i := range g {
+		isGood := true
+		for j := range g[i] {
+			from, to := i, g[i][j]
+			if h[from] <= h[to] {
+				isGood = false
+				break
 			}
+		}
+		if isGood {
+			ans++
 		}
 	}
 	return ans
-}
-
-func buildGraph(n int, a, b []int) [][]int {
-	lst := make([][]int, n)
-	for i := range a {
-		lst[a[i]-1] = append(lst[a[i]-1], b[i]-1)
-		lst[b[i]-1] = append(lst[b[i]-1], a[i]-1)
-	}
-	return lst
 }

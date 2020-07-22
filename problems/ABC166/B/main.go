@@ -9,16 +9,20 @@ import (
 func main() {
 	io := lib.NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	n := io.NextInt()
-	k := io.NextInt()
-	a := make([][]int, k)
+	n, k := io.NextInt(), io.NextInt()
+	cnt := make([]int, n)
 	for i := 0; i < k; i++ {
 		di := io.NextInt()
-		a[i] = io.NextInts(di)
+		for j := 0; j < di; j++ {
+			aij := io.NextInt() - 1
+			cnt[aij]++
+		}
 	}
-	io.Println("hello")
-	io.Println(n, k)
-	for i := 0; i < k; i++ {
-		io.Println(a[i])
+	ans := 0
+	for i := range cnt {
+		if cnt[i] == 0 {
+			ans++
+		}
 	}
+	io.Println(ans)
 }
