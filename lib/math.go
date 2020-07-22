@@ -28,6 +28,19 @@ func Min(a ...int) (min int) {
 	return min
 }
 
+// Pow returns base**n
+func Pow(base, n int) int {
+	ret := 1
+	for n > 0 {
+		if n&1 == 1 {
+			ret *= base
+		}
+		base *= base
+		n >>= 1
+	}
+	return ret
+}
+
 // Gcd returns greatest common divisor of a and b
 func Gcd(a, b int) int {
 	if b == 0 {
