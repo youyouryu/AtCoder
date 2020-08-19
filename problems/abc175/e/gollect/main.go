@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -14,34 +12,57 @@ import (
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	n, k := io.NextInt(), io.NextInt()
-	a := io.NextInts(n)
-	ans := solve(n, k, a)
+	R, C, K := io.NextInt(), io.NextInt(), io.NextInt()
+	values := make([][]int, R)
+	for i := range values {
+		values[i] = make([]int, C)
+	}
+	for i := 0; i < K; i++ {
+		ri, ci, vi := io.NextInt()-1, io.NextInt()-1, io.NextInt()
+		values[ri][ci] = vi
+	}
+	ans := solve(values)
 	io.Println(ans)
 }
 
-func solve(n, k int, a []int) int {
-	divConut := func(x float64) int {
-		if x == 0 {
-			panic("division by zero")
+func solve(values [][]int) int {
+	R, C, L := len(values), len(values[0]), 3
+	dp := make([][][]int, R)
+	for i := range dp {
+		dp[i] = make([][]int, C)
+		for j := range dp[i] {
+			dp[i][j] = make([]int, L+1)
 		}
-		cnt := 0
-		for i := range a {
-			if float64(a[i]) <= x {
-				continue
+	}
+	dp[0][0][1] = values[0][0]
+	for i := 0; i < R; i++ {
+		for j := 0; j < C; j++ {
+			for l := 0; l < L+1; l++ {
+				if i+1 < R {
+					dp[i+1][j][0] = Max(dp[i+1][j][0], dp[i][j][l])
+					dp[i+1][j][1] = Max(dp[i+1][j][1], dp[i][j][l]+values[i+1][j])
+				}
+				if j+1 < C {
+					dp[i][j+1][l] = Max(dp[i][j+1][l], dp[i][j][l])
+					if l+1 < L+1 {
+						dp[i][j+1][l+1] = Max(dp[i][j+1][l+1], dp[i][j][l]+values[i][j+1])
+					}
+				}
 			}
-			cnt += int(math.Ceil(float64(a[i])/x)) - 1
 		}
-		return cnt
 	}
-	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
-	if x == maxIter {
-		panic("reached max iteration")
-	}
-	return int(math.Ceil(float64(x+1) / 10))
+	return Max(dp[R-1][C-1]...)
 }
 
-const maxIter = 1e12
+// Max returns max value of inputs
+func Max(a ...int) (max int) {
+	for i, ai := range a {
+		if i == 0 || ai > max {
+			max = ai
+		}
+	}
+	return max
+}
 
 // Io is I/O object
 type Io struct {
@@ -102,15 +123,6 @@ func (io *Io) NextInt() int {
 		panic(err)
 	}
 	return i
-}
-
-// NextInts returns n integers from stdin
-func (io *Io) NextInts(n int) []int {
-	ret := make([]int, n)
-	for i := 0; i < n; i++ {
-		ret[i] = io.NextInt()
-	}
-	return ret
 }
 
 // Println is a wrapper of fmt.Fprintln

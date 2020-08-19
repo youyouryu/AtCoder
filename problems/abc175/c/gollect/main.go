@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -14,34 +12,27 @@ import (
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	n, k := io.NextInt(), io.NextInt()
-	a := io.NextInts(n)
-	ans := solve(n, k, a)
-	io.Println(ans)
+	x, k, d := io.NextInt(), io.NextInt(), io.NextInt()
+	x = Abs(x)
+	q := x / d
+	r := x % d
+	if k-q < 0 {
+		x = x - k*d
+	} else if (k-q)%2 == 0 {
+		x = r
+	} else {
+		x = Abs(r - d)
+	}
+	io.Println(x)
 }
 
-func solve(n, k int, a []int) int {
-	divConut := func(x float64) int {
-		if x == 0 {
-			panic("division by zero")
-		}
-		cnt := 0
-		for i := range a {
-			if float64(a[i]) <= x {
-				continue
-			}
-			cnt += int(math.Ceil(float64(a[i])/x)) - 1
-		}
-		return cnt
+// Abs retuns absolutevalue of input
+func Abs(a int) int {
+	if a < 0 {
+		return -a
 	}
-	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
-	if x == maxIter {
-		panic("reached max iteration")
-	}
-	return int(math.Ceil(float64(x+1) / 10))
+	return a
 }
-
-const maxIter = 1e12
 
 // Io is I/O object
 type Io struct {
@@ -102,15 +93,6 @@ func (io *Io) NextInt() int {
 		panic(err)
 	}
 	return i
-}
-
-// NextInts returns n integers from stdin
-func (io *Io) NextInts(n int) []int {
-	ret := make([]int, n)
-	for i := 0; i < n; i++ {
-		ret[i] = io.NextInt()
-	}
-	return ret
 }
 
 // Println is a wrapper of fmt.Fprintln

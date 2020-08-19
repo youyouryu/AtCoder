@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -15,33 +13,55 @@ func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
 	n, k := io.NextInt(), io.NextInt()
-	a := io.NextInts(n)
-	ans := solve(n, k, a)
+	p := make([]int, n)
+	for i := 0; i < n; i++ {
+		p[i] = io.NextInt() - 1
+	}
+	c := io.NextInts(n)
+	ans := solve(n, k, p, c)
 	io.Println(ans)
 }
 
-func solve(n, k int, a []int) int {
-	divConut := func(x float64) int {
-		if x == 0 {
-			panic("division by zero")
+func solve(n, k int, p, c []int) int {
+	var max int
+	for i := 0; i < n; i++ {
+		score := play(n, k, i, p, c)
+		if i == 0 || score > max {
+			max = score
 		}
-		cnt := 0
-		for i := range a {
-			if float64(a[i]) <= x {
-				continue
-			}
-			cnt += int(math.Ceil(float64(a[i])/x)) - 1
-		}
-		return cnt
 	}
-	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
-	if x == maxIter {
-		panic("reached max iteration")
-	}
-	return int(math.Ceil(float64(x+1) / 10))
+	return max
 }
 
-const maxIter = 1e12
+func play(n, k, i int, p, c []int) int {
+	score := 0
+	scores := []int{}
+	j := i
+	for {
+		score += c[p[j]]
+		scores = append(scores, score)
+		j = p[j]
+		if j == i {
+			break
+		}
+	}
+	if k <= len(scores) {
+		return Max(scores[:k]...)
+	}
+	if score <= 0 {
+		return Max(scores[:Min(k, len(scores))]...)
+	}
+	q := k / len(scores)
+	r := k % len(scores)
+	s1 := Max(scores...)
+	s2 := score
+	if r != 0 {
+		s2 += Max(0, Max(scores[:r]...))
+	}
+	score *= q - 1
+	score += Max(s1, s2)
+	return score
+}
 
 // Io is I/O object
 type Io struct {
@@ -116,4 +136,24 @@ func (io *Io) NextInts(n int) []int {
 // Println is a wrapper of fmt.Fprintln
 func (io *Io) Println(a ...interface{}) {
 	fmt.Fprintln(io.writer, a...)
+}
+
+// Max returns max value of inputs
+func Max(a ...int) (max int) {
+	for i, ai := range a {
+		if i == 0 || ai > max {
+			max = ai
+		}
+	}
+	return max
+}
+
+// Min returns minimum value of inputs
+func Min(a ...int) (min int) {
+	for i, ai := range a {
+		if i == 0 || ai < min {
+			min = ai
+		}
+	}
+	return min
 }

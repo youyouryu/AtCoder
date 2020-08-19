@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -14,34 +12,37 @@ import (
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	n, k := io.NextInt(), io.NextInt()
-	a := io.NextInts(n)
-	ans := solve(n, k, a)
-	io.Println(ans)
-}
-
-func solve(n, k int, a []int) int {
-	divConut := func(x float64) int {
-		if x == 0 {
-			panic("division by zero")
-		}
-		cnt := 0
-		for i := range a {
-			if float64(a[i]) <= x {
+	n := io.NextInt()
+	l := io.NextInts(n)
+	cnt := 0
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < n; j++ {
+			if l[i] == l[j] {
 				continue
 			}
-			cnt += int(math.Ceil(float64(a[i])/x)) - 1
+			for k := j + 1; k < n; k++ {
+				if l[j] == l[k] || l[k] == l[i] {
+					continue
+				}
+				l1, l2, l3 := l[i], l[j], l[k]
+				l1, l2 = swap(l1, l2)
+				l2, l3 = swap(l2, l3)
+				l1, l2 = swap(l1, l2)
+				if l1+l2 > l3 {
+					cnt++
+				}
+			}
 		}
-		return cnt
 	}
-	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
-	if x == maxIter {
-		panic("reached max iteration")
-	}
-	return int(math.Ceil(float64(x+1) / 10))
+	io.Println(cnt)
 }
 
-const maxIter = 1e12
+func swap(i, j int) (int, int) {
+	if j < i {
+		return j, i
+	}
+	return i, j
+}
 
 // Io is I/O object
 type Io struct {

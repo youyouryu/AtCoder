@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/heap"
 	"math"
 	"os"
 	"sort"
@@ -19,33 +18,24 @@ func main() {
 }
 
 func solve(n, k int, a []int) int {
-	if n == 1 {
-		return int(math.Ceil(float64(a[0]) / float64(k)))
-
+	divConut := func(x float64) int {
+		if x == 0 {
+			panic("division by zero")
+		}
+		cnt := 0
+		for i := range a {
+			if float64(a[i]) <= x {
+				continue
+			}
+			cnt += int(math.Ceil(float64(a[i])/x)) - 1
+		}
+		return cnt
 	}
-	q := &lib.PriorityQueue{}
-	for i := range a {
-		heap.Push(q, wood{float64(a[i]), 1})
+	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
+	if x == maxIter {
+		panic("reached max iteration")
 	}
-	for i := 0; i < k; i++ {
-		w0 := heap.Pop(q).(wood)
-		w1 := heap.Pop(q).(wood)
-		j := sort.Search(k-i, func(j int) bool { return w0.length/(w0.division+float64(j)) <= w1.length/w1.division })
-		w0.division += float64(j)
-		i += j - 1
-		heap.Push(q, w0)
-		heap.Push(q, w1)
-	}
-	w := heap.Pop(q).(wood)
-	return int(math.Ceil(w.length / w.division))
+	return int(math.Ceil(float64(x+1) / 10))
 }
 
-// gollect: keep methods
-type wood struct {
-	length   float64
-	division float64
-}
-
-func (w wood) Less(z lib.Comparable) bool {
-	return w.length/w.division > z.(wood).length/z.(wood).division
-}
+const maxIter = 1e12

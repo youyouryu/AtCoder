@@ -4,44 +4,30 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
-	"strconv"
 	"strings"
 )
 
 func main() {
 	io := NewIo(os.Stdin, os.Stdout)
 	defer io.Flush()
-	n, k := io.NextInt(), io.NextInt()
-	a := io.NextInts(n)
-	ans := solve(n, k, a)
-	io.Println(ans)
-}
-
-func solve(n, k int, a []int) int {
-	divConut := func(x float64) int {
-		if x == 0 {
-			panic("division by zero")
-		}
-		cnt := 0
-		for i := range a {
-			if float64(a[i]) <= x {
-				continue
+	s := io.Next()
+	cnt, max := 0, 0
+	for i := range s {
+		if s[i] == 'R' {
+			cnt++
+		} else {
+			if cnt > max {
+				max = cnt
 			}
-			cnt += int(math.Ceil(float64(a[i])/x)) - 1
+			cnt = 0
 		}
-		return cnt
 	}
-	x := sort.Search(maxIter, func(x int) bool { return divConut(float64(x+1)/10) <= k })
-	if x == maxIter {
-		panic("reached max iteration")
+	if cnt > max {
+		max = cnt
 	}
-	return int(math.Ceil(float64(x+1) / 10))
+	io.Println(max)
 }
-
-const maxIter = 1e12
 
 // Io is I/O object
 type Io struct {
@@ -93,24 +79,6 @@ func (io *Io) Next() string {
 	r := io.tokens[io.nextToken]
 	io.nextToken++
 	return r
-}
-
-// NextInt returns an integer from stdin
-func (io *Io) NextInt() int {
-	i, err := strconv.Atoi(io.Next())
-	if err != nil {
-		panic(err)
-	}
-	return i
-}
-
-// NextInts returns n integers from stdin
-func (io *Io) NextInts(n int) []int {
-	ret := make([]int, n)
-	for i := 0; i < n; i++ {
-		ret[i] = io.NextInt()
-	}
-	return ret
 }
 
 // Println is a wrapper of fmt.Fprintln
